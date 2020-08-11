@@ -33,7 +33,7 @@ public final class JavaSparkPi {
   public static void main(String[] args) throws Exception {
     SparkSession spark = SparkSession
       .builder()
-            .master("local[3]")
+            .master("local[4]")
       .appName("JavaSparkPi")
             .config("spark.driver.host","localhost")
 
