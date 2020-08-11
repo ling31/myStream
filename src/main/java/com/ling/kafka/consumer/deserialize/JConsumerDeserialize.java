@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.smartloli.kafka.game.x.book_5.deserialize;
+package com.ling.kafka.consumer.deserialize;
 
 import java.util.Arrays;
 import java.util.Properties;

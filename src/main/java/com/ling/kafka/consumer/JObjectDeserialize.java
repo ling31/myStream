@@ -15,14 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.smartloli.kafka.game.x.book_5;
+package com.ling.kafka.consumer;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smartloli.kafka.game.x.book_4.JObjectSerial;
+import com.ling.kafka.JObjectSerial;
 
 /**
  * 反序列化一个类.

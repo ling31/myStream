@@ -15,12 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.smartloli.kafka.game.x.book_5.deserialize;
+package com.ling.kafka.consumer.deserialize;
 
 import java.util.Map;
 
 import org.apache.kafka.common.serialization.Deserializer;
-import org.smartloli.kafka.game.x.book_4.serialization.SerializeUtils;
+import com.ling.kafka.produce.serialization.SerializeUtils;
 
 /**
  * 实现自定义反序列化.

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.smartloli.kafka.game.x.book_5;
+package com.ling.kafka.consumer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +48,7 @@ public class JConsumerMutil {
 	public JConsumerMutil() {
 		Properties props = new Properties();
 		props.put("bootstrap.servers", "dn1:9095,dn2:9094,dn3:9092");// 指定Kafka集群地址
-		props.put("group.id", "ke");// 指定消费者组
+		props.put("group.id", "ke");// 指定消费者组 同一个topic的分区只交给同一个组的一个消费者
 		props.put("enable.auto.commit", "true");// 开启自动提交
 		props.put("auto.commit.interval.ms", "1000");// 自动提交的时间间隔
 		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");// 反序列化消息主键
@@ -59,7 +59,7 @@ public class JConsumerMutil {
 
 	/** 执行多线程消费者实例. */
 	public void execute() {
-		// 初始化线程池
+		// 初始化线程池 不要超过最大分区数
 		executorService = Executors.newFixedThreadPool(6);
 		while (true) {
 			// 拉取Kafka主题消息数据

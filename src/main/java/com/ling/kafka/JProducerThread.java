@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.smartloli.kafka.game.x.book_4;
+package com.ling.kafka;
 
 import java.util.Date;
 import java.util.Properties;
@@ -44,12 +44,12 @@ public class JProducerThread extends Thread {
 	// 创建一个日志对象
 	private final Logger LOG = LoggerFactory.getLogger(JProducerThread.class);
 	// 声明最大线程数
-	private final static int MAX_THREAD_SIZE = 6;
+	private final static int MAX_THREAD_SIZE = 100;
 
 	/** 配置Kafka连接信息. */
 	public Properties configure() {
 		Properties props = new Properties();
-		props.put("bootstrap.servers", "dn1:9092,dn2:9092,dn3:9092");// 指定Kafka集群地址
+		props.put("bootstrap.servers", "10.100.0.235:1025");// 指定Kafka集群地址
 		props.put("acks", "1"); // 设置应答模式, 1表示有一个Kafka代理节点返回结果
 		props.put("retries", 0); // 重试次数
 		props.put("batch.size", 16384); // 批量提交大小
@@ -57,7 +57,7 @@ public class JProducerThread extends Thread {
 		props.put("buffer.memory", 33554432); // 缓冲大小
 		props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer"); // 序列化主键
 		props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");// 序列化值
-		props.put("partitioner.class", "org.smartloli.kafka.game.x.book_4.JPartitioner");// 指定自定义分区类
+		props.put("partitioner.class", "com.ling.kafka.JPartitioner");// 指定自定义分区类
 		
 		return props;
 	}
@@ -75,7 +75,7 @@ public class JProducerThread extends Thread {
 	public void run() {
 		Producer<String, String> producer = new KafkaProducer<>(configure());
 		// 发送100条JSON格式的数据
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 100; i++) {
 			// 封装JSON格式
 			JSONObject json = new JSONObject();
 			json.put("id", i);
@@ -83,7 +83,7 @@ public class JProducerThread extends Thread {
 			json.put("date", new Date().toString());
 			String k = "key" + i;
 			// 异步发送
-			producer.send(new ProducerRecord<String, String>("ip_login_rt", k, json.toJSONString()), new Callback() {
+			producer.send(new ProducerRecord<String, String>("a01", k, json.toJSONString()), new Callback() {
 				public void onCompletion(RecordMetadata metadata, Exception e) {
 					if (e != null) {
 						LOG.error("Send error, msg is " + e.getMessage());
@@ -94,7 +94,7 @@ public class JProducerThread extends Thread {
 			});
 		}
 		try {
-			sleep(3000);// 间隔3秒
+			sleep(1000);// 间隔3秒
 		} catch (InterruptedException e) {
 			LOG.error("Interrupted thread error, msg is " + e.getMessage());
 		}

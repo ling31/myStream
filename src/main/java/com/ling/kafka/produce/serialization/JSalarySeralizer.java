@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.smartloli.kafka.game.x.book_4.serialization;
+package com.ling.kafka.produce.serialization;
 
 import java.util.Map;
 

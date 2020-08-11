@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.smartloli.kafka.game.x.book_5;
+package com.ling.kafka.consumer;
 
 import java.util.Arrays;
 import java.util.Properties;
@@ -25,8 +25,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 /**
- * 实现一个消费者实例代码.
- * 
+ * 实现一个消费者实例代码.自动获取分区
+ * 自动获取分区
  * @author smartloli.
  *
  *         Created by May 6, 2018
