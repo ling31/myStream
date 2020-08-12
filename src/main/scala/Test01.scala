@@ -20,7 +20,6 @@ object Test01 {
     import spark.implicits._
     val keyValueDataset = inputDataFrame.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)", "CAST(topic AS STRING)").as[(String, String,String)]
 
-
     val subwayDataFrame = keyValueDataset.flatMap(t => {
       Array((t._2,t._3))
     }).toDF("value","topic")
