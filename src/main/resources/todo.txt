@@ -93,3 +93,12 @@ http://spark.apache.org/docs/2.4.6/structured-streaming-programming-guide.html
 开始整demo：java代码-kafka-structured-正反序列化-foreachbatch
 1、彻底搞清楚scala和java的带简单序列化的读kafka的代码流程区别 官网demo
 2、官网的介绍 foreachbatch 试着使用 sout即可
+
+javaAPI：http://spark.apache.org/docs/2.4.6/api/java/index.html?org/apache/spark/api/java/JavaRDD.html
+scalaAPI：http://spark.apache.org/docs/2.4.6/api/scala/index.html#org.apache.spark.rdd.RDD
+
+rdd的常用转换和行动算子梳理完成
+todo
+rdd dstream的原理基本梳理完成，还需要学习几遍以巩固
+structured stream的原理 与dstream的原理对比
+structured 有dstream的概念吗

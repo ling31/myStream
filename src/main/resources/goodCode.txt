@@ -1,0 +1,13 @@
+public ShopHomeView findByOwnerIds(String ownerId) {
+
+Optional<ShopHomeView> view = shopHomeViewRepository.findByOwnerId(ownerId);
+if(view.isPresent()) {
+return view.get();
+}else {
+return null;
+}
+}
+
+.isPresent()一般与.get()方法合用，当view存在时，view.isPresent()值为true，通过get（）方法返回对象
+
+colletion.stream 流的高级用法 java8

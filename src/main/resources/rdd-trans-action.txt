@@ -1,0 +1,118 @@
+javaAPI：http://spark.apache.org/docs/2.4.6/api/java/index.html?org/apache/spark/api/java/JavaRDD.html
+--------------------------------------------------【map】
+<R> JavaRDD<R> map(Function<T,R> f)  (<R>声明R是泛型)
+JavaRDD<Integer> lineLengths ：
+= lines.map(s -> s.length());
+= lines.map(new Function<String, Integer>() {
+  public Integer call(String s) { return s.length(); }
+});
+
+--------------------------------------------------【mapToPair】
+<K2,V2> JavaPairRDD<K2,V2> mapToPair(PairFunction<T,K2,V2> f)
+对一个RDD中的每个元素调用f函数，其中原来RDD中的每一个元素都是T类型的，调用f函数后会进行一定的操作把每个元素都转换成一个<K2,V2>类型的对象
+会将一个长度为N的、每个元素都是T类型的对象，转换成另一个长度为N的、每个元素都是<K2,V2>类型的对象
+JavaPairRDD<String, Long> pairs = words.mapToPair(s -> new Tuple2<>(s, 1L));
+--------------------------------------------------【flatMap】
+<U> JavaRDD<U> flatMap(FlatMapFunction<T,U> f)
+flatMap(FlatMapFunction<T,U> f)
+将javapairrdd转为javardd 扁平化
+call方法返回的是一个迭代器
+JavaRDD<String> javaRDD = javaPairRDD1.flatMap(new FlatMapFunction<Tuple2<String, String>, String>() {
+            public Iterator<String> call(Tuple2<String, String> stringStringTuple2) throws Exception {
+                List<String> list = Lists.newArrayList();
+                list.add(stringStringTuple2._1);
+                list.add(stringStringTuple2._2);
+                return list.iterator();
+            }
+        });
+JavaRDD<String> words = input.flatMap( s -> Arrays.asList( s.split( " " ) ).iterator() );
+#String[] s = {"aa","bb","cc"};
+#List<String> strlist = Arrays.asList(s);将数组转为列表 不适用基本类型Arrays.asList("a","b")
+
+--------------------------------------------------【flatMapToPair】
+<K2,V2> JavaPairRDD<K2,V2> flatMapToPair(PairFlatMapFunction<T,K2,V2> f)
+对对一个RDD中的每个元素(每个元素都是T类型的)调用f函数，通过f函数可以将每个元素转换为<K2,V2>类型的元素，然后比mapToPair方法多了一个flat操作，将所有的<K2,V2>类型的元素合并成为一个Iterable<Tuple2<K2, V2>>类型的对象。
+会在map的基础上进行一个flatten操作，即将所有的元素合并到一个Iterable<<K2,V2>>类型的集合中
+JavaPairRDD<String,String> javaPairRDD = javaRDD.flatMapToPair(new PairFlatMapFunction<String, String, String>() {
+            public Iterator<Tuple2<String, String>> call(String s) throws Exception {
+                String[] strings = s.split(",",-1);
+                List<Tuple2<String,String>> list = Lists.newArrayList();
+                for (int i = 0; i < strings.length; i++) {
+                    list.add(new Tuple2<String, String>(strings[i],"1"));
+                }
+                return list.iterator();
+            }
+        });
+JavaPairRDD<String,String> javaPairRDD = javaRDD.flatMapToPair(s-> {
+            String[] strings = s.split(",",-1);
+            List<Tuple2<String,String>> list = Lists.newArrayList();
+            for (int i = 0; i < strings.length; i++) {
+                    list.add(new Tuple2<String, String>(strings[i],"1"));
+                }
+            return list.iterator();
+            }
+        });
+--------------------------------------------------【filter】
+public JavaRDD<T> filter(Function<T,Boolean> f)
+JavaRDD<String> zksRDD = lines.filter(new Function<String, Boolean>() {
+            @Override
+            public Boolean call(String s) throws Exception {
+                return s.contains("zks");
+            }
+        });
+JavaRDD<String> zksRDD = lines.filter(s-> s.contains("zks"));
+
+--------------------------------------------------【mapPartitions】带partition的都是传入迭代器
+<U> JavaRDD<U> mapPartitions(FlatMapFunction<java.util.Iterator<T>,U> f)
+JavaRDD<String> lowerCaseLines = lines.mapPartitions(new FlatMapFunction<Iterator<String>, String>() {
+            @Override
+            public Iterable<String> call(Iterator<String> linesPerPartition) throws Exception {
+                List<String> lowerCaseLines = new ArrayList<String>();
+                while (linesPerPartition.hasNext()) {
+                    String line = linesPerPartition.next();
+                    lowerCaseLines.add(line.toLowerCase());
+                }
+                return lowerCaseLines.iterator();
+            }
+        });
+JavaRDD<String> lowerCaseLines = lines.mapPartitions(iter -> {
+                List<String> lowerCaseLines = new ArrayList<String>();
+                while (iter.hasNext()) {
+                    String line = iter.next();
+                    lowerCaseLines.add(line.toLowerCase());
+                }
+                return lowerCaseLines.iterator();
+        });
+-----------------------------------------------------【mapPartitionsToPair】
+<K2,V2> JavaPairRDD<K2,V2> mapPartitionsToPair(PairFlatMapFunction<java.util.Iterator<T>,K2,V2> f)
+JavaRDD<String,String> lowerCaseLines = lines.mapPartitionsToPair(iter -> {
+                List<String> lowerCaseLines = new ArrayList<String>();
+                while (iter.hasNext()) {
+                    String line = iter.next();
+                    lowerCaseLines.add(new Tuple2<String, String>(line.toLowerCase(),"1"));
+                }
+                return lowerCaseLines.iterator();
+        });
+
+===============================行动操作 无新rdd生成
+------------------------------------------------------【rdd.foreach】
+void foreach(VoidFunction<T> f)
+遍历RDD-分区中的每一个元素，依次应用f函数
+rdd.foreach(str -> System.out.println(str));
+rdd.foreach(row -> log.error(row.toString()));
+javaRDD.foreach(new VoidFunction<Integer>() {
+  @Override
+  public void call(Integer integer) throws Exception {
+    System.out.println(integer);
+  }
+
+------------------------------------------------------【foreachPartition】
+void foreach(VoidFunction<T> f)
+遍历RDD-分区中的每一个元素，依次应用f函数
+javaRDD.foreachPartition(new VoidFunction<Iterator<Integer>>() {
+  @Override
+   public void call(Iterator<Integer> integerIterator) throws Exception {
+    while(integerIterator.hasNext())
+      System.out.print(integerIterator.next());
+   }
+});
