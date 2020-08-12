@@ -43,11 +43,10 @@ import com.alibaba.fastjson.JSONObject;
 import scala.Tuple2;
 
 /**
- * 使用Spark引擎来统计用户订单主题中的金额.
+ * kafka测试
  * 
- * @author smartloli.
+ * @author dail11
  *
- *         Created by Jul 14, 2018
  */
 public class UserOrderStats {
 

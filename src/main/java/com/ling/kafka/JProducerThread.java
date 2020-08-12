@@ -39,6 +39,7 @@ import com.alibaba.fastjson.JSONObject;
  *
  *         Created by Apr 27, 2018
  */
+//kafka eagle监控系统
 public class JProducerThread extends Thread {
 
 	// 创建一个日志对象
