@@ -17,6 +17,7 @@ object Test01 {
       .option("subscribe", "test8")
       .load()
     //    inputDataFrame.printSchema()
+    spark.udf.
     import spark.implicits._
     val keyValueDataset = inputDataFrame.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)", "CAST(topic AS STRING)").as[(String, String,String)]
 

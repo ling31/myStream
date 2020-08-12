@@ -1,0 +1,95 @@
+任务拆解：
+1、springboot整合stream -> 整合structured
+2、structured基于rdd开发的java
+3、2整合kafka的java
+4、先重构原始工况
+
+spark2.4.6 kafka 1.1.0
+
+解决顺序：
+1、structured基于rdd开发的java
+
+java： structured 接收kafka 反序列化 foreachRDD
+
+writeStream
+    .format("kafka")
+
+writeStream
+    .foreach(...)
+    .start()
+
+writeStream
+    .format("console")
+    .start()
+
+foreach和foreachBatch操作允许您对流查询的输出应用任意操作和编写逻辑。
+foreach允许在每一行上自定义编写逻辑
+foreachBatch允许对每个微批处理的输出进行任意操作和自定义逻辑
+
+foreachBatch(…)允许您指定一个函数，该函数在流查询的每个微批处理的输出数据上执行。
+接受两个参数:一个DataFrame或数据集，它具有微批处理的输出数据和微批处理的惟一ID。
+重用现有批处理数据源——对于许多存储系统，可能还没有可用的流接收器，但可能已经有了用于批处理查询的数据写入器。
+使用foreachBatch，您可以对每个微批处理的输出使用批处理数据写入器。
+
+
+streamingDatasetOfString.writeStream().foreachBatch(
+  new VoidFunction2<Dataset<String>, Long>() {
+    public void call(Dataset<String> dataset, Long batchId) {
+      // Transform and write batchDF
+    }
+  }
+).start();
+
+
+多个目标输出
+streamingDF.writeStream.foreachBatch { (batchDF: DataFrame, batchId: Long) =>
+  batchDF.persist()
+  batchDF.write.format(...).save(...)  // location 1
+  batchDF.write.format(...).save(...)  // location 2
+  batchDF.unpersist()
+}
+默认情况下，foreachBatch只提供至少一次写保证。
+但是，您可以使用为函数提供的batchId来重复执行输出数据，并获得精确的一次保证。
+foreachBatch不与连续处理模式一起工作，因为它从根本上依赖流查询的微批处理执行。如果以连续模式写入数据，则使用foreach。
+
+如果foreachBatch不是一个选项(例如，对应的批处理数据写入器不存在，或者连续处理模式)，
+那么可以使用foreach表示定制的写入器逻辑。
+具体来说，可以通过将数据写入逻辑划分为三种方法来表示:open、process和close。
+streamingDatasetOfString.writeStream().foreach(
+  new ForeachWriter<String>() {
+
+    @Override public boolean open(long partitionId, long version) {
+      // Open connection
+    }
+
+    @Override public void process(String record) {
+      // Write string to connection
+    }
+
+    @Override public void close(Throwable errorOrNull) {
+      // Close the connection
+    }
+  }
+).start();
+
+Streaming ETL on CloudTrail Logs using Structured Streaming
+scala和java混写
+
+所有的都用scala写 除了序列化反序列化
+
+1、structure读取kafka数据
+2、序列化采用 自定义java序列化 序列化 kafkajavademo有
+方法参考 https://databricks.com/blog/2017/04/26/processing-data-in-apache-kafka-with-structured-streaming-in-apache-spark-2-2.html
+User Defined Serializers and Deserializers
+
+写入cass参考
+https://www.iteblog.com/archives/2602.html
+
+记得随时github搜类似代码找突破口
+
+http://spark.apache.org/docs/2.4.6/structured-streaming-programming-guide.html
+
+晚上：
+开始整demo：java代码-kafka-structured-正反序列化-foreachbatch
+1、彻底搞清楚scala和java的带简单序列化的读kafka的代码流程区别 官网demo
+2、官网的介绍 foreachbatch 试着使用 sout即可
