@@ -53,3 +53,35 @@ public StructType schema()
 
 df的UDF
 
+总结：
+0：所谓反序列化，是反序列化成什么
+
+1、spark.readStream().format(kafka).load()->Dataset<Row> (df)
+  df.printSchema() reveals the schema of our DataFrame.
+  root
+   |-- key: binary (nullable = true)
+   |-- value: binary (nullable = true)
+   |-- topic: string (nullable = true)
+   |-- partition: integer (nullable = true)
+   |-- offset: long (nullable = true)
+   |-- timestamp: timestamp (nullable = true)
+   |-- timestampType: integer (nullable = true)
+
+1、Dataset<Row>.selectExpr：执行sql表达式，在列上（只选择kafka的value）应用自定义的反序列化函数（UDF）/或者像demo一样，在kafka参数中指定反序列化类
+选取了topic和value，考虑只用value：
+df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
+df.selectExpr("""deserialize("topic1", value) AS message""")
+
+2、as的作用：
+Dataset<Person> people = spark.read().parquet("...").as(Encoders.bean(Person.class)); // Java
+将已有schema的df应用class结构，转成Dataset<Person>，要求：df的schema的列名与class的成员变量名一致
+
+3、
+3.1 把已有demo按df stream的逻辑改写，应用1和2的思想
+3.2 3.1完成后应用到原始数据的情形
+
+4、有想法就把搜索git的代码段记录
+udf.register("deserialize
+udf().register("deser
+structured kafka 反序列化
+

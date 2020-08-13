@@ -22,7 +22,7 @@ org.apache.spark.sql.streaming
 Class DataStreamReader
 
 kafka source
-spark.readStream().format(kafka)load()->Dataset<Row> (df)
+spark.readStream().format(kafka).load()->Dataset<Row> (df)
 df.printSchema() reveals the schema of our DataFrame.
 root
  |-- key: binary (nullable = true)

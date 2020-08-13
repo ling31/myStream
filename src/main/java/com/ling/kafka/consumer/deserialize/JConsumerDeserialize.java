@@ -42,14 +42,14 @@ public class JConsumerDeserialize extends Thread {
 	/** 初始化Kafka集群信息. */
 	private Properties configure() {
 		Properties props = new Properties();
-		props.put("bootstrap.servers", "dn1:9092,dn2:9092,dn3:9092");// 指定Kafka集群地址
+		props.put("bootstrap.servers", "linux01:9092,linux02:9092,linux03:9092");// 指定Kafka集群地址
 		props.put("group.id", "ke");// 指定消费者组
 		props.put("enable.auto.commit", "true");// 开启自动提交
 		props.put("auto.commit.interval.ms", "1000");// 自动提交的时间间隔
 		// 反序列化消息主键
 		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		// 反序列化消费记录
-		props.put("value.deserializer", "org.smartloli.kafka.game.x.book_5.deserialize.JSalaryDeserializer");
+		props.put("value.deserializer", "com.ling.kafka.consumer.deserialize.JSalaryDeserializer");
 		return props;
 	}
 
@@ -59,11 +59,12 @@ public class JConsumerDeserialize extends Thread {
 		// 创建一个消费者实例对象
 		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(configure());
 		// 订阅消费主题集合
-		consumer.subscribe(Arrays.asList("test_topic_ser_des"));
+		consumer.subscribe(Arrays.asList("a1"));
 		// 实时消费标识
 		boolean flag = true;
 		while (flag) {
 			// 获取主题消息数据
+			// 如果不在props里配的话就类似工况中的情形 对比工况改写掉
 			ConsumerRecords<String, String> records = consumer.poll(100);
 			for (ConsumerRecord<String, String> record : records)
 				// 循环打印消息记录

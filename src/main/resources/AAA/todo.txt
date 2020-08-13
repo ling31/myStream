@@ -79,3 +79,7 @@ scalaAPI：http://spark.apache.org/docs/2.4.6/api/scala/index.html#org.apache.sp
 rdd的常用转换和行动算子梳理完成
 todo
 晚上：demo上的正反序列化跑通，理解下序列化动作执行代码处，再看一眼实时工况的情况
+
+todo
+泛型
+序列化kafka的value作为df的schema
