@@ -1,0 +1,43 @@
+SparkSession.Builder
+http://spark.apache.org/docs/2.4.6/api/java/index.html?org/apache/spark/api/java/JavaRDD.html
+
+DataFrameReader	read()
+Returns a DataFrameReader that can be used to read non-streaming data in as a DataFrame.
+DataStreamReader	readStream()
+Returns a DataStreamReader that can be used to read streaming data in as a DataFrame.
+
+Dataset<Row>    createDataFrame
+<T> Dataset<T>  createDataset
+
+DataFrameReader	read()
+Returns a DataFrameReader that can be used to read non-streaming data in as a DataFrame.
+
+DataStreamReader	readStream()
+Returns a DataStreamReader that can be used to read streaming data in as a DataFrame.
+
+StreamingQueryManager	streams()
+Returns a StreamingQueryManager that allows managing all the StreamingQuerys active on this.
+
+org.apache.spark.sql.streaming
+Class DataStreamReader
+
+kafka source
+spark.readStream().format(kafka)load()->Dataset<Row> (df)
+df.printSchema() reveals the schema of our DataFrame.
+root
+ |-- key: binary (nullable = true)
+ |-- value: binary (nullable = true)
+ |-- topic: string (nullable = true)
+ |-- partition: integer (nullable = true)
+ |-- offset: long (nullable = true)
+ |-- timestamp: timestamp (nullable = true)
+ |-- timestampType: integer (nullable = true)
+
+返回的DataFrame包含Kafka记录的所有熟悉字段及其相关元数据。
+我们现在可以使用所有熟悉的DataFrame或Dataset操作来转换结果。
+但是，我们通常从解析键和值列中的二进制值开始。
+如何解释这些blob是应用程序特有的。
+幸运的是，Spark SQL包含许多用于常见序列化类型的内置转换
+
+
+

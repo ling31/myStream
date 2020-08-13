@@ -1,0 +1,55 @@
+Dataset<Row>.selectExpr：执行sql表达式 在列上应用自定义的反序列化函数（UDF）
+
+【字符串】：如果Kafka记录的字节表示UTF8字符串，我们可以简单地使用强制转换将二进制数据转换为正确的类型。
+df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
+
+【JSON】：使用内置的from_json函数以及预期的模式将二进制值转换为Spark SQL结构。
+# value schema: { "a": 1, "b": "string" }
+schema = StructType().add("a", IntegerType()).add("b", StringType())
+df.select(
+  col("key").cast("string"),
+  from_json(col("value").cast("string"), schema))
+
+【用户定义序列化器和反序列化器】implements the Kafka Deserializer interface
+实现Kafka反序列化器接口的代码。所示的Scala代码将这段代码包装为用户定义的函数(UDF)来利用它
+kafka反序列化接口，与原来代码不同，原来是在转换里反序列化
+https://kafka.apache.org/0100/javadoc/org/apache/kafka/common/serialization/Deserializer.html
+
+object MyDeserializerWrapper {
+  val deser = new MyDeserializer
+}
+spark.udf.register("deserialize", (topic: String, bytes: Array[Byte]) =>
+  MyDeserializerWrapper.deser.deserialize(topic, bytes)
+)
+
+Dataset<Row>  df.selectExpr("""deserialize("topic1", value) AS message""")
+dataset是类型特定对象的强类型集合，可以使用函数或关系操作并行转换这些对象。每个数据集还有一个称为DataFrame的非类型化视图：Dataset<Row>
+
+为了有效地支持对象类型的对象，需要一个编码器。编码器将对象类型T映射到Spark的内部类型系统。
+给定一个类Person，它有两个字段:name (string)和age (int)，使用编码器告诉Spark在运行时生成代码，将Person对象序列化为二进制结构。
+这种二进制结构通常具有更低的内存占用，并且优化了数据处理的效率(例如柱状格式)。要理解数据的内部二进制表示，可以使用schema函数。
+
+从源头创建dataset： Dataset<Person> people = spark.read().parquet("...").as(Encoders.bean(Person.class)); // Java
+
+Dataset<Bean> df.as[]
+public <U> Dataset<U> as(Encoder<U> evidence$2)
+返回一个新数据集，其中每个记录都映射到指定的类型。
+用于映射列的方法依赖于U的类型:
+-当U是一个类时，类的字段将映射到同名的列(大小写敏感性由spark.sql.caseSensitive决定)。
+-当U是一个元组，列将被映射为序数(即第一列将被分配为_1)。
+-当U是基本类型(例如，String, Int等)，那么DataFrame的第一列将被使用。
+
+如果数据集的SCHEMA与所需的U类型不匹配，您可以将select与别名一起使用，或者根据需要重新排列或重命名。
+
+public Dataset<Row> toDF(scala.collection.Seq<String> colNames)
+将此强类型数据集合转换为具有重命名列的通用数据格式。
+这在将元组的RDD转换为具有有意义名称的数据格式时非常方便
+  val rdd: RDD[(Int, String)] = ...
+  rdd.toDF()  // this implicit conversion creates a DataFrame with column name `_1` and `_2`
+  rdd.toDF("id", "name")  // this creates a DataFrame with column name "id" and "name"
+
+public StructType schema()
+返回dataset的schema
+
+df的UDF
+

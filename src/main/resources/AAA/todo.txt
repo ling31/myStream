@@ -6,8 +6,6 @@
 
 spark2.4.6 kafka 1.1.0
 
-
-
 foreach和foreachBatch操作允许您对流查询的输出应用任意操作和编写逻辑。
 foreach允许在每一行上自定义编写逻辑
 foreachBatch允许对每个微批处理的输出进行任意操作和自定义逻辑
