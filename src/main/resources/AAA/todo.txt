@@ -6,21 +6,7 @@
 
 spark2.4.6 kafka 1.1.0
 
-解决顺序：
-1、structured基于rdd开发的java
 
-java： structured 接收kafka 反序列化 foreachRDD
-
-writeStream
-    .format("kafka")
-
-writeStream
-    .foreach(...)
-    .start()
-
-writeStream
-    .format("console")
-    .start()
 
 foreach和foreachBatch操作允许您对流查询的输出应用任意操作和编写逻辑。
 foreach允许在每一行上自定义编写逻辑
@@ -72,11 +58,6 @@ streamingDatasetOfString.writeStream().foreach(
   }
 ).start();
 
-Streaming ETL on CloudTrail Logs using Structured Streaming
-scala和java混写
-
-所有的都用scala写 除了序列化反序列化
-
 1、structure读取kafka数据
 2、序列化采用 自定义java序列化 序列化 kafkajavademo有
 方法参考 https://databricks.com/blog/2017/04/26/processing-data-in-apache-kafka-with-structured-streaming-in-apache-spark-2-2.html
@@ -99,6 +80,3 @@ scalaAPI：http://spark.apache.org/docs/2.4.6/api/scala/index.html#org.apache.sp
 
 rdd的常用转换和行动算子梳理完成
 todo
-rdd dstream的原理基本梳理完成，还需要学习几遍以巩固
-structured stream的原理 与dstream的原理对比
-structured 有dstream的概念吗
