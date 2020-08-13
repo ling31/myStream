@@ -1,0 +1,20 @@
+反序列化
+
+https://kafka.apache.org/0100/javadoc/org/apache/kafka/common/serialization/Deserializer.html
+
+UDFRegistration	udf()
+A collection of methods for registering user-defined functions (UDF).
+
+// 反序列化消息主键
+props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+// 反序列化消费记录
+props.put("value.deserializer", "org.smartloli.kafka.game.x.book_5.deserialize.JSalaryDeserializer");
+
+注意：并不是通过以下形式实现：
+spark.udf.register("deserialize", (topic: String, bytes: Array[Byte]) =>
+  MyDeserializerWrapper.deser.deserialize(topic, bytes)
+)
+Dataset<Row>  df.selectExpr("""deserialize("topic1", value) AS message""")
+#以上两种git查看例子
+
+直接在kafka层或者df转换层来反序列化，而不是在rdd的转换操作内部进行
