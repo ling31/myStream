@@ -83,3 +83,4 @@ todo
 todo
 泛型
 序列化kafka的value作为df的schema
+app2里有序列化的列子
