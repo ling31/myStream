@@ -4,7 +4,7 @@ object Test01 {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder
-      .master("local[*]")
+      .master("local[3]")
       .appName("test01")
       .config("spark.driver.host", "localhost")
       .getOrCreate()
@@ -14,7 +14,7 @@ object Test01 {
       .readStream
       .format("kafka")
       .option("kafka.bootstrap.servers", "10.100.0.235:1025")
-      .option("subscribe", "test8")
+      .option("subscribe", "a-dl-00")
       .load()
     //    inputDataFrame.printSchema()
     import spark.implicits._
@@ -32,7 +32,8 @@ object Test01 {
     val query = result.writeStream
       .outputMode("append")
       .format("console")
-      .option("checkpointLocation", "./test01")
+      .option("checkpointLocation", "./test03")
+      .option("failOnDataLoss", false)
       .start()
 
     query.awaitTermination()
