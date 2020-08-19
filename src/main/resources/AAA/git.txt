@@ -1,0 +1,97 @@
+公司git版本控制规范
+https://windtools.cn:8090/pages/viewpage.action?pageId=16646938
+
+github网页上可以直接创建分支
+所以可以直接基于dev创建新开发分支，需要吗
+明天还能提交吗
+代码写好准备操作之前最好打压缩包
+============
+已确认：
+自己的项目管理：
+github dail11-sany 96321aaA
+1、vcs-import into git （远程建仓库，但没提交）
+2、vcs-commit commit and push提交到本地或远程
+3、github上看到master分支，页面上建dev分支
+（以下同公司项目）
+4、本机clone dev，生成本地dev
+5、新建分支dev-child01 本地
+6、child01开发代码，提交至01
+6.1、乌龟右键推送 写EVI-4245 自动远端新建分支
+7、切换dev，拉取远端dev
+8、dev选择合并：从01
+9、dev提交，拉取远端dev（以防万一）
+10、dev推送至远程dev
+
+
+公司项目：
+1、clone dev dev
+2、创建-检出本地dev
+3、同步至远程 dev（同时新建）
+4、idea基于本地的dev开发
+5、更新代码提交至dev 同步远端dev
+6、切换到本地master 合并 同步至远端master
+
+========测试总结
+1、clone master 自动创建本地master
+2、创建-检出本地dev
+3、同步至远程 dev（同时新建）
+4、idea基于本地的dev开发
+5、更新代码提交至dev 同步远端dev
+6、切换到本地master 合并 同步至远端master（合并分支：最终要谁 先切换到谁）
+
+idea方式：
+1、先clone远端master到本地
+2、vcs-git-branchs-new 新建本地dev
+3、修改本地dev 提交本地 （选commit and push 省去4步骤）
+4、vcs-git-push 本地dev到远程dev同时新建远程dev
+5、idea checkout到master vcs-git-merge branchs 选本地dev
+6、vcs-git-push到远程master
+
+todo pull-request
+
+===============
+1、安装64位git
+2、安装小乌龟和汉化
+3、新建文件夹repo/repo1 在repo1内乌龟创建本地仓库
+4、本地仓库添加文件hello.txt，工作目录repo1（包含.GIT文件夹的目录）
+5、乌龟-add 暂存区，乌龟-提交至master 版本库
+6、乌龟-版本库浏览器 查看是否提交成功
+7、文件乌龟-显示日志
+8、删除版本库的文件但是在本地保留：文件乌龟-删除并保留本地副本-提交
+
+9、提交java工程 HELLOPROJECT
+10、不需要的文件夹乌龟删除并添加到忽略列表 gitignore加到本地暂存区
+11、helloproject文件夹乌龟提交master
+#######本地仓库基本完成
+1、交换代码：远程仓库
+2、github建立远程仓库 不要init readme
+3、本地仓库推送到远程
+3.1、使用ssh
+在repo1下git bash ssh-keygen -t rsa 生成在当前用户的.ssh下
+复制id_rsa.pub 到github 的seeting下
+gitbash
+git remote add origin git@github.com:dail11-sany/repo1.git 建立本地和远程的链接
+git push -u origin master  将master分支推送到远程仓库origin
+乌龟-设置-网络里的ssh客户端修改为D:\Program Files\Git\usr\bin\ssh.exe
+乌龟-git同步 选远端url
+3.2、使用http
+先github－repo3
+乌龟-git同步 配置一个新的远端配置 https dail11-sany 96321aaA
+4、从远程仓库clone代码
+乌龟-克隆
+5、推送冲突解决 先拉取，手动解决 head到===是自己的 下面是别人的
+
+6、分支
+repo1 乌龟 切换检出 新建分支dev1;创建分支-dev2 但是没切换到dev2
+建分支：加了个指针，修改后：分叉
+
+合并分支：最终要谁 先切换到谁
+
+7、idea里使用git
+Vcs-import into
+选工程的父目录
+
+本地提交 点工具栏按钮
+
+提交远程 vcs git push
+
